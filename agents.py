@@ -15,7 +15,8 @@ from pinecone import Pinecone
 
 load_dotenv()
 
-
+# TOOLS list
+# TOOLS list
 def open_application_from_desktop(app_name: str):
     desktop = os.path.join(os.path.expanduser("~"), "Desktop")
     shortcut = os.path.join(desktop, f"{app_name}.lnk")
@@ -58,6 +59,7 @@ fun_fact_tool = FunctionTool.from_defaults(
 
 
 def inquire_information(query_prompt: str):
+    # INQUIRES DATA FROM PINECONE DB
     pinecone = Pinecone(api_key=os.environ["PINECONE_API_KEY"])
     pinecone_index = pinecone.Index("llamaindex-document-helper")
     vector_store = PineconeVectorStore(pinecone_index=pinecone_index)
@@ -73,13 +75,18 @@ inquire_candidate_info = FunctionTool.from_defaults(
     name="inquire_candidate_info",
     description="Query candidate information stored in Pinecone index.",
 )
+# TOOLS list
+# TOOLS list
 
+
+
+# Agent initialization
+# Agent initialization
 llm = OpenAI(model="gpt-4o-mini", temperature=0.3)
 
 agent = ReActAgent(tools=[open_app_tool, password_tool, fun_fact_tool, inquire_candidate_info], llm=llm)
 
 ctx = Context(agent)
-
 
 async def main():
     user_prompt = "Do we have candidates? Open Discord on my desktop, then give me fact about coffe, and create password with 10 symbols"
