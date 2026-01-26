@@ -1,0 +1,5 @@
+llama-index
+python-dotenv
+requests
+pinecone-client
+streamlit
