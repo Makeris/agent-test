@@ -1,5 +1,9 @@
-llama-index
+streamlit
 python-dotenv
 requests
+beautifulsoup4
 pinecone-client
-streamlit
+llama-index
+llama-index-vector-stores-pinecone
+llama-hub
+llama-index-question-gen-guidance
