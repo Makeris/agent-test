@@ -98,12 +98,11 @@ ctx = Context(agent)
 async def run_agent(user_prompt: str):
     handler = agent.run(user_prompt, ctx=ctx)
     collected = ""
-    response = None
     async for ev in handler.stream_events():
         if isinstance(ev, AgentStream):
             collected += ev.delta
-            response = await handler
-            return collected, response
+    response = await handler
+    return collected, response
 
 st.set_page_config(page_title="Agent Chat", page_icon="🤖")
 st.title("🤖 Chat with  ReAct Agent with toolkit")
