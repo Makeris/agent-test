@@ -110,10 +110,6 @@ st.title("🤖 Chat with  ReAct Agent with toolkit")
 st.sidebar.header("🛠 Agent Tools")
 tools_info = [
     {
-        "name": "Open Desktop Application",
-        "description": "Open a desktop application at windows shortcut by providing its name.",
-    },
-    {
         "name": "Generate Password",
         "description": "Generate a random password with a specified length.",
     },
@@ -141,22 +137,18 @@ for candidate in candidates:
             st.write(f"**Title:** {candidate['role']}")
             st.write(f"{candidate['info']}")
 
-# CHAT
 if "messages" not in st.session_state:
     st.session_state["messages"] = []
 
-# Вивід історії
 for msg in st.session_state["messages"]:
     with st.chat_message(msg["role"]):
         st.markdown(msg["content"])
 
-    # Поле вводу
 if prompt := st.chat_input("Type here..."):
     st.session_state["messages"].append({"role": "user", "content": prompt})
     with st.chat_message("user"):
         st.markdown(prompt)
 
-    # Виклик агента асинхронно
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
     streamed, final_response = loop.run_until_complete(run_agent(prompt))
