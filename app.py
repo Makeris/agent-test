@@ -95,9 +95,10 @@ agent = ReActAgent(
 ctx = Context(agent)
 
 
-async def run_agent(user_prompt: str) -> None:
+async def run_agent(user_prompt: str):
     handler = agent.run(user_prompt, ctx=ctx)
     collected = ""
+    response = None
     async for ev in handler.stream_events():
         if isinstance(ev, AgentStream):
             collected += ev.delta
