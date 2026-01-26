@@ -7,3 +7,4 @@ llama-index
 llama-index-vector-stores-pinecone
 llama-hub
 llama-index-question-gen-guidance
+llama-index-core
