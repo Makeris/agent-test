@@ -113,7 +113,7 @@ async def run_agent(user_prompt: str):
 
 
 st.set_page_config(page_title="Agent Chat", page_icon="🤖")
-st.title("🤖 Chat with  ReAct Agent with toolkit")
+st.title("🤖 Chat with ReAct Agent with toolkit")
 
 st.sidebar.header("🛠 Agent Tools")
 tools_info = [
@@ -130,9 +130,9 @@ tools_info = [
         "description": "Search and retrieve candidate information from the Pinecone vector index.",
     },
 ]
+
 for tool in tools_info:
     st.sidebar.markdown(f"**{tool['name']}** — {tool['description']}")
-
 
 candidates = candidates_list.CANDIDATES
 for candidate in candidates:
@@ -157,13 +157,19 @@ if prompt := st.chat_input("Type here..."):
     with st.chat_message("user"):
         st.markdown(prompt)
 
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-    steps, final_response = loop.run_until_complete(run_agent(prompt))
+    with st.chat_message("assistant"):
+        with st.spinner("⏳ Agent is processing..."):
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            steps, final_response = loop.run_until_complete(run_agent(prompt))
 
     for step in steps:
+        st.session_state["messages"].append({"role": "assistant", "content": step})
         with st.chat_message("assistant"):
             st.markdown(step)
 
+    st.session_state["messages"].append(
+        {"role": "assistant", "content": final_response}
+    )
     with st.chat_message("assistant"):
         st.markdown(final_response)
