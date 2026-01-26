@@ -19,7 +19,6 @@ load_dotenv()
 
 
 # TOOLS list
-# TOOLS list
 def open_application_from_desktop(app_name: str):
     desktop = os.path.join(os.path.expanduser("~"), "Desktop")
     shortcut = os.path.join(desktop, f"{app_name}.lnk")
@@ -97,12 +96,21 @@ ctx = Context(agent)
 
 async def run_agent(user_prompt: str):
     handler = agent.run(user_prompt, ctx=ctx)
-    collected = ""
+    buffer = ""
+    steps = []
+
     async for ev in handler.stream_events():
         if isinstance(ev, AgentStream):
-            collected += ev.delta
+            buffer += ev.delta
+            if buffer.endswith("."):
+                steps.append(buffer.strip())
+                buffer = ""
+
     response = await handler
-    return collected, response
+    if buffer:
+        steps.append(buffer.strip())
+    return steps, response
+
 
 st.set_page_config(page_title="Agent Chat", page_icon="🤖")
 st.title("🤖 Chat with  ReAct Agent with toolkit")
@@ -151,9 +159,11 @@ if prompt := st.chat_input("Type here..."):
 
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
-    streamed, final_response = loop.run_until_complete(run_agent(prompt))
-    st.session_state["messages"].append(
-        {"role": "assistant", "content": final_response}
-    )
+    steps, final_response = loop.run_until_complete(run_agent(prompt))
+
+    for step in steps:
+        with st.chat_message("assistant"):
+            st.markdown(step)
+
     with st.chat_message("assistant"):
         st.markdown(final_response)
