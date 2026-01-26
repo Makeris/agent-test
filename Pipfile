@@ -5,6 +5,7 @@ name = "pypi"
 
 [packages]
 llama-index = "*"
+llama-index-core = "*"
 python-dotenv = "*"
 requests = "*"
 beautifulsoup4 = "*"
@@ -13,6 +14,7 @@ streamlit = "*"
 kagglehub = "*"
 llama-hub = "*"
 llama-index-question-gen-guidance = "*"
+llama-index-vector-stores-pinecone = "*"
 
 [dev-packages]
 
