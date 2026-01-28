@@ -95,7 +95,14 @@ ctx = Context(agent)
 
 
 async def run_agent(user_prompt: str):
-    handler = agent.run(user_prompt, ctx=ctx)
+    history_text = "\n".join(
+        [f"{msg['role']}: {msg['content']}" for msg in st.session_state['context_history']]
+    )
+    full_prompt = f"{history_text}\nuser: {user_prompt}\nassistant:"
+
+    st.session_state['context_history'].append({"role": "user", "content": user_prompt})
+
+    handler = agent.run(full_prompt, ctx=ctx)
     buffer = ""
     steps = []
 
@@ -148,6 +155,9 @@ for candidate in candidates:
 if "messages" not in st.session_state:
     st.session_state["messages"] = []
 
+if "context_history" not in st.session_state:
+    st.session_state['context_history'] = []
+
 for msg in st.session_state["messages"]:
     with st.chat_message(msg["role"]):
         st.markdown(msg["content"])
@@ -171,5 +181,6 @@ if prompt := st.chat_input("Type here..."):
     st.session_state["messages"].append(
         {"role": "assistant", "content": final_response}
     )
+    st.session_state['context_history'].append({"role": "assistant", "content": final_response.response.blocks[0].text})
     with st.chat_message("assistant"):
         st.markdown(final_response)
