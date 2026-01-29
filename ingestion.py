@@ -1,22 +1,22 @@
-# import os
-# from dotenv import load_dotenv
-# from llama_index.core import (
-#     SimpleDirectoryReader,
-#     Settings,
-#     StorageContext,
-#     VectorStoreIndex,
-#     Document,
-# )
-# from llama_index.core.node_parser import SentenceSplitter
-# from llama_index.embeddings.openai import OpenAIEmbedding
-# from llama_index.llms.openai import OpenAI
-# from llama_index.vector_stores.pinecone import PineconeVectorStore
-# from pinecone import Pinecone
-#
-#
-# load_dotenv()
-# llm = OpenAI()
-#
+import os
+from dotenv import load_dotenv
+from llama_index.core import (
+    SimpleDirectoryReader,
+    Settings,
+    StorageContext,
+    VectorStoreIndex,
+    Document,
+)
+from llama_index.core.node_parser import SentenceSplitter
+from llama_index.embeddings.openai import OpenAIEmbedding
+from llama_index.llms.openai import OpenAI
+from llama_index.vector_stores.pinecone import PineconeVectorStore
+from pinecone import Pinecone
+
+
+load_dotenv()
+llm = OpenAI()
+
 #
 # if __name__ == "__main__":
 
@@ -65,44 +65,44 @@
     #     print("Data ingested and indexed successfully")
 
 #
-# import candidates_list
-#
-# def ingest_vocabulary(vocabulary: list) -> None:
-#     documents = [
-#         Document(
-#             text=f"{item['name']} — {item['role']}. {item['summary']} {item['info']}",
-#             doc_id=str(item["id"]),
-#             metadata={
-#                 "type": "candidate",
-#                 "candidate_id": str(item["id"]),
-#                 "name": item.get("name", ""),
-#                 "role": item.get("role", ""),
-#                 "summary": item.get("summary", ""),
-#             },
-#         )
-#         for item in vocabulary
-#     ]
-#
-#     splitter = SentenceSplitter(chunk_size=512, chunk_overlap=50)
-#     nodes = splitter.get_nodes_from_documents(documents)
-#
-#     for doc in documents:
-#         for node in nodes:
-#             if node.ref_doc_id == doc.doc_id:
-#                 node.metadata.update(doc.metadata)
-#
-#     Settings.llm = OpenAI(model="gpt-4o-mini", temperature=0)
-#     Settings.embed_model = OpenAIEmbedding(model="text-embedding-3-small")
-#
-#     pinecone = Pinecone(api_key=os.environ["PINECONE_API_KEY"])
-#     pinecone_index = pinecone.Index("llamaindex-document-helper")
-#     vector_store = PineconeVectorStore(pinecone_index=pinecone_index)
-#
-#     storage_context = StorageContext.from_defaults(vector_store=vector_store)
-#
-#     VectorStoreIndex(nodes, storage_context=storage_context, show_progress=True)
-#
-#     print("Candidates ingested and indexed successfully")
+import candidates_list
+
+def ingest_vocabulary(vocabulary: list) -> None:
+    documents = [
+        Document(
+            text=f"{item['name']} — {item['role']}. {item['summary']} {item['info']}",
+            doc_id=str(item["id"]),
+            metadata={
+                "type": "candidate",
+                "candidate_id": str(item["id"]),
+                "name": item.get("name", ""),
+                "role": item.get("role", ""),
+                "summary": item.get("summary", ""),
+            },
+        )
+        for item in vocabulary
+    ]
+
+    splitter = SentenceSplitter(chunk_size=512, chunk_overlap=50)
+    nodes = splitter.get_nodes_from_documents(documents)
+
+    for doc in documents:
+        for node in nodes:
+            if node.ref_doc_id == doc.doc_id:
+                node.metadata.update(doc.metadata)
+
+    Settings.llm = OpenAI(model="gpt-4o-mini", temperature=0)
+    Settings.embed_model = OpenAIEmbedding(model="text-embedding-3-small")
+
+    pinecone = Pinecone(api_key=os.environ["PINECONE_API_KEY"])
+    pinecone_index = pinecone.Index("llamaindex-document-helper")
+    vector_store = PineconeVectorStore(pinecone_index=pinecone_index)
+
+    storage_context = StorageContext.from_defaults(vector_store=vector_store)
+
+    VectorStoreIndex(nodes, storage_context=storage_context, show_progress=True)
+
+    print("Candidates ingested and indexed successfully")
 #
 #
 # import re
@@ -188,4 +188,4 @@
 #
 #
 # # ingest_resumes()
-# ingest_vocabulary(candidates_list.CANDIDATES)
+ingest_vocabulary(candidates_list.CANDIDATES)
